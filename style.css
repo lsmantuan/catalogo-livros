@@ -1,4 +1,5 @@
 @charset "utf-8";
+@import url('https://fonts.googleapis.com/css2?family=Georama:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 * {
     box-sizing: border-box;
@@ -6,19 +7,167 @@
     margin: 0;
 }
 
+body {
+    font-family: "Georama";
+    font-size: 16px;
+}
+
 ul {
     list-style-type: none;
 }
 
+h1 {
+    font-size: 1.3rem;
+}
+
+h2 {
+    font-size: 1.3rem;
+}
+
+.autores {
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.categorias {
+    font-size: 0.8rem;
+}
+
+header {
+    position: fixed;
+    font-weight: 100;
+    padding-top: 8.2px;
+    padding-left: 10px;
+    width: 100%;
+    height: 40px;
+    background: rgba(255, 0, 255, 0.6);
+}
+
 #container {
+    padding-top: 40px;
     display: flex;
     flex-wrap: wrap;
 }
 
 .item {
-    flex-basis: 100%;
+    border: 1px solid black;
+    flex-basis: 30%;
+    display: flex;
+    justify-content: space-between;
+    align-content: space-between;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+ melhorar a regra 
+@media (min-width: 680px) {
+    .item {
+        flex-basis: 40%;
+    }    
+}
+
+@media (min-width: 1040px) {
+    .item {
+        flex-basis: 30%;
+    }    
 }
 
 .capa {
-    float: left;
+    border: 1px solid black;
+    /*float: left;*/
+    width: 90px;
+}
+
+.capa > img {
+    width: 100%;
+}
+
+.conteudo {
+    border: 1px solid black;
+    width: 200px;
+    /*margin-left: 100px;*/
+}
+
+.botaoProcurar {
+    border: 1px solid black;
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.input {
+    border: 1px solid black;
+    width: 110px;
+    height: 25px;
+}
+
+.pesquisa {
+    border: 1px solid black;
+    position: fixed;
+    transform: translate(-198px, -82px);    
+    width: 168px;
+    height: 52px;
+    top: 100%;
+    left: 100%;
+}
+
+.botaoEditar {
+    border: 1px solid black;
+    position: relative;
+    flex-basis: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 2rem;
+    right: 20px;
+    margin-bottom: 5px;
+    transition: all 0.5s ease;
+}
+
+.botaoExcluir {
+    border: 1px solid black;
+    position: relative;
+    flex-basis: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 2rem;
+    right: 20px;
+    margin-top: 5px;
+    transition: all 0.5s ease;
+}
+
+.ferramentas {
+    border: 1px solid black;
+    background:rgba(255, 0, 255, 0.6);
+    
+    border-radius: 15px 0 0 15px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+
+    width: 20px;
+    height: 133.375px;
+    
+    transition: all 0.5s ease;
+    overflow: hidden;
+
+    position: relative;
+    float: right;
+    top: 0%;
+}
+
+.ferramentas:hover {
+    width: 90px;
+}
+
+.ferramentas:hover .botaoEditar {
+    right: 40px;
+}
+
+.ferramentas:hover .botaoExcluir {
+    right: 40px;
 }
