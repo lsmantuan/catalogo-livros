@@ -16,8 +16,12 @@ ul {
     list-style-type: none;
 }
 
-h1 {
+#nome {
     font-size: 1.3rem;
+}
+
+#nome:focus {
+    outline: none;
 }
 
 h2 {
@@ -51,18 +55,15 @@ header {
 
 .item {
     border: 1px solid black;
-    flex-basis: 30%;
-    display: flex;
-    justify-content: space-between;
-    align-content: space-between;
+    flex-basis: 90%;
     margin-top: 10px;
     margin-left: 10px;
 }
 
- melhorar a regra 
+/*melhorar a regra */
 @media (min-width: 680px) {
     .item {
-        flex-basis: 40%;
+        flex-basis: 45%;
     }    
 }
 
@@ -74,7 +75,7 @@ header {
 
 .capa {
     border: 1px solid black;
-    /*float: left;*/
+    float: left;
     width: 90px;
 }
 
@@ -84,8 +85,7 @@ header {
 
 .conteudo {
     border: 1px solid black;
-    width: 200px;
-    /*margin-left: 100px;*/
+    width: calc(100% - 70px);
 }
 
 .botaoProcurar {
@@ -120,7 +120,7 @@ header {
     height: 40px;
     border-radius: 50%;
     font-size: 2rem;
-    right: 20px;
+    right: 40px;
     margin-bottom: 5px;
     transition: all 0.5s ease;
 }
@@ -133,7 +133,7 @@ header {
     height: 40px;
     border-radius: 50%;
     font-size: 2rem;
-    right: 20px;
+    right: 40px;
     margin-top: 5px;
     transition: all 0.5s ease;
 }
@@ -141,33 +141,27 @@ header {
 .ferramentas {
     border: 1px solid black;
     background:rgba(255, 0, 255, 0.6);
-    
     border-radius: 15px 0 0 15px;
-
+    width: 20px;
+    height: 134px;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-end;
-
-    width: 20px;
-    height: 133.375px;
-    
     transition: all 0.5s ease;
     overflow: hidden;
-
-    position: relative;
     float: right;
-    top: 0%;
 }
 
 .ferramentas:hover {
-    width: 90px;
+    width: 70px;
 }
 
 .ferramentas:hover .botaoEditar {
-    right: 40px;
+    right: 20px;
 }
 
 .ferramentas:hover .botaoExcluir {
-    right: 40px;
+    right: 20px;
 }

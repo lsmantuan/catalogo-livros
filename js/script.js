@@ -11,17 +11,17 @@ var view = {
         livro.className = "item";
         livro.id = isbn;
         livro.innerHTML += 
-            `<div class="capa">
+            `<div class="ferramentas">
+                <input type="button" id="botaoEditar" class="botaoEditar" value="&#9998;">
+                <input type="button" id="botaoExcluir" class="botaoExcluir" value="&#128465;">
+            </div>
+            <div class="capa">
                 <img src="${capa}">
             </div>
             <div class="conteudo">
                 <h2>${titulo}</h2>
                 <ul class="autores"></ul>
                 <ul class="categorias"></ul>
-            </div>
-            <div class="ferramentas">
-                <input type="button" id="botaoEditar" class="botaoEditar" value="🗑">
-                <input type="button" id="botaoExcluir" class="botaoExcluir" value="🗑">
             </div>`;
         biblioteca.appendChild(livro);
         view.adicionarAutores(iLivros);
@@ -53,6 +53,7 @@ var view = {
 };
 
 var model = {
+    nome: "Minha Biblioteca",
     biblioteca: [],
 
     pesquisarLivro: function() {
@@ -95,7 +96,7 @@ var controller = {
         for (let i = 0; i < model.biblioteca.length; i++) {
             var iLivro = model.biblioteca[i].isbn.indexOf(idLivro)
             if (iLivro === 0) {
-                // estudar melhor o funcionamento do método splice *******************
+                // estudar melhor o funcionamento do método splice 
                 // entender o erro quando ser encontra o mesmo livro duas vezes
                 // filtrar a possibilidade de inserir dois livros iguais
                 model.biblioteca.splice(i, 1)
@@ -120,6 +121,13 @@ function Livro(titulo, autores, categorias, isbn, capa) {
 window.onload = function() {
     var procurar = document.getElementById("botaoProcurar");
     procurar.addEventListener("click", model.pesquisarLivro);
+
+    var nomeAntigo = document.getElementById("nome")
+    nomeAntigo.addEventListener("input", function(event) {
+       novoNome = event.target.innerText;
+       model.nome = novoNome;
+    })
+
     model.carregarLivros();
     model.ativarBotoes();
 }
