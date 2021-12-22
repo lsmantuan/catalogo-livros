@@ -28,6 +28,11 @@ h2 {
     font-size: 1.3rem;
 }
 
+.editavel:focus {
+    outline: none;
+    background-color: rgb(220, 220, 220)
+}
+
 .autores {
     font-size: 0.8rem;
     margin-top: 5px;
@@ -47,7 +52,7 @@ header {
     background: rgba(255, 0, 255, 0.6);
 }
 
-#container {
+#containerLivros {
     padding-top: 40px;
     display: flex;
     flex-wrap: wrap;
@@ -85,7 +90,8 @@ header {
 
 .conteudo {
     border: 1px solid black;
-    width: calc(100% - 70px);
+    margin-left: 95px;
+    margin-right: 25px;
 }
 
 .botaoProcurar {
@@ -112,30 +118,57 @@ header {
     left: 100%;
 }
 
-.botaoEditar {
+.botaoEditar, .botaoExcluir {
     border: 1px solid black;
     position: relative;
-    flex-basis: auto;
     width: 40px;
     height: 40px;
     border-radius: 50%;
     font-size: 2rem;
-    right: 40px;
-    margin-bottom: 5px;
     transition: all 0.5s ease;
 }
 
+.botaoEditar {
+    margin-bottom: 5px;
+}
+
 .botaoExcluir {
-    border: 1px solid black;
-    position: relative;
-    flex-basis: auto;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 2rem;
-    right: 40px;
     margin-top: 5px;
-    transition: all 0.5s ease;
+}
+
+.botaoAbrir, .botaoFechar {
+    width: 20px;
+    height: 100%;
+    font-size: 1rem;
+    background-color: transparent;
+}
+
+.botaoAbrir {
+    display: block;
+}
+
+.botaoFechar {
+    display: none;
+}
+
+.editarExcluir, .abrirFechar {
+    background-color: aquamarine;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+}
+
+.editarExcluir {
+    width: 40px;
+    height: 100%;
+    margin-left: 5px;
+}
+
+.abrirFechar {
+    width: 20px;
+    height: 100%;
+    left: calc(100% - 20px);
 }
 
 .ferramentas {
@@ -145,23 +178,36 @@ header {
     width: 20px;
     height: 134px;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
+    position: relative;
     transition: all 0.5s ease;
     overflow: hidden;
     float: right;
 }
 
-.ferramentas:hover {
-    width: 70px;
+.loader {
+    position: absolute;
+    background: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    left: calc(50% - 20px);
+    top: calc(50% - 20px);
 }
 
-.ferramentas:hover .botaoEditar {
-    right: 20px;
+.loader::after {
+    position: absolute;
+    content: "";
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(blueviolet, purple 40%);
+    z-index: -1;
+    border-radius: 50%;
+    left: -10px;
+    top: -10px;
+    animation: spin 0.8s linear infinite;
 }
 
-.ferramentas:hover .botaoExcluir {
-    right: 20px;
+@keyframes spin {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
 }
