@@ -1,5 +1,16 @@
 @charset "utf-8";
-@import url('https://fonts.googleapis.com/css2?family=Georama:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@import url("https://fonts.googleapis.com/css2?family=Georama:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@font-face { 
+    font-family: "Mantuan";
+    src: url(/fonts/mantuan.ttf);
+}
+
+@keyframes spin {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
 
 * {
     box-sizing: border-box;
@@ -16,40 +27,75 @@ ul {
     list-style-type: none;
 }
 
-#nome {
-    font-size: 1.3rem;
-}
-
-#nome:focus {
-    outline: none;
-}
-
-h2 {
-    font-size: 1.3rem;
-}
-
-.editavel:focus {
-    outline: none;
-    background-color: rgb(220, 220, 220)
-}
-
-.autores {
-    font-size: 0.8rem;
-    margin-top: 5px;
-}
-
-.categorias {
-    font-size: 0.8rem;
-}
-
-header {
+.topo {
     position: fixed;
-    font-weight: 100;
-    padding-top: 8.2px;
-    padding-left: 10px;
     width: 100%;
     height: 40px;
-    background: rgba(255, 0, 255, 0.6);
+    padding: 8px 0 0 10px;
+    background-color: blueviolet;
+    color: white;
+}
+
+.titulo {
+    font-size: 1.3rem;
+}
+
+#containerModal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: brown;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#carregar {
+    display: none;
+    width: 60px;
+    height: 60px;
+    left: calc(50% - 30px);
+    top: calc(50% - 30px);
+    border-radius: 50%;
+    border: 5.5px solid white;
+    border-top: 5.5px solid blueviolet;
+    animation: spin 0.8s linear infinite;
+}
+
+#pesquisar {
+    display: none;
+    width: 200px;
+    height: 200px;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: black 3px 3px 3px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+#inputISBN {
+    width: 160px;
+    height: 35px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 15px 0 15px 0;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.pesquisarLivro, .esconderPesquisa {
+    font-family: "Mantuan";
+    font-size: 1.5rem;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    margin: 0 5px 0 5px;
+    background-color: blueviolet;
+    box-shadow: black 1px 1px 1px;
 }
 
 #containerLivros {
@@ -59,13 +105,12 @@ header {
 }
 
 .item {
-    border: 1px solid black;
     flex-basis: 90%;
+    background-color: lightgray;
     margin-top: 10px;
     margin-left: 10px;
 }
 
-/*melhorar a regra */
 @media (min-width: 680px) {
     .item {
         flex-basis: 45%;
@@ -79,7 +124,6 @@ header {
 }
 
 .capa {
-    border: 1px solid black;
     float: left;
     width: 90px;
 }
@@ -89,42 +133,56 @@ header {
 }
 
 .conteudo {
-    border: 1px solid black;
-    margin-left: 95px;
-    margin-right: 25px;
+    margin: 10px 40px 10px 100px;
 }
 
-.botaoProcurar {
-    border: 1px solid black;
-    font-size: 1.5rem;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+.autores, .categorias {
+    font-size: 0.8rem;
+    margin-top: 5px;
 }
 
-.input {
-    border: 1px solid black;
-    width: 110px;
-    height: 25px;
+.ferramentas {
+    position: relative;
+    float: right;
+    width: 30px;
+    height: 134px;
+    background-color: blueviolet;
+    overflow: hidden;
+    border: none;
+    border-radius: 15px 0 0 15px;
+    transition: all 0.5s ease;
 }
 
-.pesquisa {
-    border: 1px solid black;
-    position: fixed;
-    transform: translate(-198px, -82px);    
-    width: 168px;
-    height: 52px;
-    top: 100%;
-    left: 100%;
+.editarExcluir, .abrirFechar {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+}
+
+.editarExcluir {
+    width: 40px;
+    height: 100%;
+    margin-left: 5px;
+}
+
+.abrirFechar {
+    width: 30px;
+    height: 100%;
+    left: calc(100% - 30px);
 }
 
 .botaoEditar, .botaoExcluir {
-    border: 1px solid black;
+    font-family: "Mantuan";
+    font-size: 1.5rem;
+    color: blueviolet;    
     position: relative;
     width: 40px;
     height: 40px;
+    border: none;
     border-radius: 50%;
-    font-size: 2rem;
+    box-shadow: black 1px 1px 1px;
     transition: all 0.5s ease;
 }
 
@@ -136,11 +194,19 @@ header {
     margin-top: 5px;
 }
 
+.editavel:focus {
+    outline: none;
+    background-color: lightcoral;
+}
+
 .botaoAbrir, .botaoFechar {
-    width: 20px;
+    font-family: "Mantuan";
+    font-size: 1.5rem;
+    color: white;
+    width: 30px;
     height: 100%;
-    font-size: 1rem;
-    background-color: transparent;
+    background-color: lightcoral;
+    border: none;
 }
 
 .botaoAbrir {
@@ -151,63 +217,18 @@ header {
     display: none;
 }
 
-.editarExcluir, .abrirFechar {
-    background-color: aquamarine;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: absolute;
-}
-
-.editarExcluir {
-    width: 40px;
-    height: 100%;
-    margin-left: 5px;
-}
-
-.abrirFechar {
-    width: 20px;
-    height: 100%;
-    left: calc(100% - 20px);
-}
-
-.ferramentas {
-    border: 1px solid black;
-    background:rgba(255, 0, 255, 0.6);
-    border-radius: 15px 0 0 15px;
-    width: 20px;
-    height: 134px;
-    z-index: 1;
-    position: relative;
-    transition: all 0.5s ease;
-    overflow: hidden;
-    float: right;
-}
-
-.loader {
-    position: absolute;
-    background: white;
-    width: 40px;
-    height: 40px;
+#exibirPesquisa {
+    font-family: "Mantuan";
+    font-size: 2.5rem;
+    color: white;
+    position: fixed;
+    width: 55px;
+    height: 55px;
+    top: 100%;
+    left: 100%;
+    transform: translate(-105px, -105px);
+    border: none;
     border-radius: 50%;
-    left: calc(50% - 20px);
-    top: calc(50% - 20px);
-}
-
-.loader::after {
-    position: absolute;
-    content: "";
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(blueviolet, purple 40%);
-    z-index: -1;
-    border-radius: 50%;
-    left: -10px;
-    top: -10px;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    0% {transform: rotate(0deg);}
-    100% {transform: rotate(360deg);}
+    background-color: blueviolet;
+    box-shadow: black 2px 2px 2px;
 }

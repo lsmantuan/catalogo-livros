@@ -17,15 +17,15 @@ var view = {
                     <input type="button" class="botaoExcluir" value="&#128465;">
                 </div>
                 <div class="abrirFechar">
-                    <input type="button" class="botaoAbrir" value="&#706;">
-                    <input type="button" class="botaoFechar" value="&#707;">
+                    <input type="button" class="botaoAbrir" value="&#10094;">
+                    <input type="button" class="botaoFechar" value="&#10095;">
                 </div>
             </div>
             <div class="capa">
                 <img src="${capa}">
             </div>
             <div class="conteudo">
-                <h2>${titulo}</h2>
+                <h2 class="titulo">${titulo}</h2>
                 <ul class="autores"></ul>
                 <ul class="categorias"></ul>
             </div>`;
@@ -57,44 +57,79 @@ var view = {
         }        
     },
 
-    carregando: function carregando(status) {
-        var container = document.getElementById("containerLoader");
+    exibirCarregando: function(status) {
+        var carregar = document.getElementById("carregar");
+        var container = document.getElementById("containerModal");
         if (status === true) {
-            var loader = document.createElement("div");
-            loader.setAttribute("class", "loader");
-            container.appendChild(loader);        
+            carregar.style.display = "block";
+            container.style.display = "flex";
         } else if (status === false) {
-            container.removeChild(container.lastChild);
+            carregar.style.display = "none";
+            container.style.display = "none";
         }
     },
 
-    menu: function(event) {
-        console.log(event.composedPath());
+    exibirFerramentas: function(event) {
+        model.livroAtual(event);
         var status = event.target.className;
-        var ferramentas = event.composedPath()[3].children[0];
-        var botaoAbrir = ferramentas.children[1].children[0];
-        var botaoFechar = ferramentas.children[1].children[1];
         if (status === "botaoAbrir") {
-            ferramentas.style.width = "80px";
-            botaoAbrir.style.display = "none";
-            botaoFechar.style.display = "block";
+            model.livro.ferramentas.style.width = "90px";
+            model.livro.botaoAbrir.style.display = "none";
+            model.livro.botaoFechar.style.display = "block";
         } else if (status === "botaoFechar") {
-            ferramentas.style.width = "20px";
-            botaoAbrir.style.display = "block";
-            botaoFechar.style.display = "none";
+            model.livro.ferramentas.style.width = "30px";
+            model.livro.botaoAbrir.style.display = "block";
+            model.livro.botaoFechar.style.display = "none";
+            model.tornarEditavel(false);
         }
+    },
+
+    exibirEsconderPesquisa: function(event) {
+        var status = event.target.id;
+        var container = document.getElementById("containerModal");
+        var pesquisar = document.getElementById("pesquisar");
+
+        if (status === "exibirPesquisa") {
+            container.style.display = "flex";
+            pesquisar.style.display = "block";
+        } else if (status === "esconderPesquisa" || status === "containerModal") {
+            pesquisar.style.display = "none";
+            container.style.display = "none";
+        }
+    },
+
+    esconderPesquisa: function() {
+        var pesquisar = document.getElementById("pesquisar");
+        pesquisar.style.display = "none";
     }
 };
 
 var model = {
     nome: "Minha Biblioteca",
     biblioteca: [],
+    livro: {titulo: "", autores: "", categorias: "", isbn: "", ferramentas: "", botaoAbrir: "", botaoFechar: ""},
+
+    // salva o livro atual na propriedade livro
+    livroAtual: function(event) {
+        var path = event.composedPath()[3];
+        var indice = model.indice(path.id);
+
+        this.livro.titulo = path.children[2].children[0];
+        this.livro.autores = path.children[2].children[1].children;
+        this.livro.categorias = path.children[2].children[2].children;
+        this.livro.isbn = path.id;
+        this.livro.ferramentas = path.children[0];
+        this.livro.botaoAbrir = path.children[0].children[1].children[0];
+        this.livro.botaoFechar = path.children[0].children[1].children[1];
+
+    },
 
     pesquisarLivro: function() {
-        var isbn = document.getElementById("isbn");
+        var isbn = document.getElementById("inputISBN");
         var link = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn.value;
         
-        view.carregando(true);
+        view.esconderPesquisa();
+        view.exibirCarregando(true);
 
         fetch(link)
             .then(function(response) {
@@ -109,7 +144,7 @@ var model = {
                 var isbn = response.items[0].volumeInfo.industryIdentifiers[0].identifier;
                 var livro = new Livro(titulo, autores, categorias, isbn, capa);
                 model.biblioteca.push(livro);
-                view.carregando(false);
+                view.exibirCarregando(false);
                 view.adicionarLivro();
             });
     },
@@ -131,60 +166,78 @@ var model = {
         for (let i = 0; i < botoesExcluir.length; i++) {
             botoesExcluir[i].onclick = controller.excluir;
             botoesEditar[i].onclick = controller.editar;
-            botoesAbrir[i].onclick = view.menu;
-            botoesFechar[i].onclick = view.menu;
+            botoesAbrir[i].onclick = view.exibirFerramentas;
+            botoesFechar[i].onclick = view.exibirFerramentas;
         }
     },
 
-    editavel: function(path, editavel) {
-        var titulo = path.children[2].children[0];
-        var autores = path.children[2].children[1].children;
-        var categorias = path.children[2].children[2].children;
+    // torna os campos do livro atual editaveis
+    tornarEditavel: function(status) {
 
-        // ONDE COLOCAR?
-        model.escutar(path, titulo);
+        if (status === true) {
+            this.livro.titulo.setAttribute("contenteditable", "true");
+            this.livro.titulo.className = "titulo editavel";
 
-        if (editavel === true) {
-            titulo.setAttribute("contenteditable", "true");
-            titulo.className = "editavel";
-
-            for (let i = 0; i < autores.length; i++) {
-                autores[i].children[0].setAttribute("contenteditable", "true");
-                autores[i].children[0].className = "editavel";
+            for (let i = 0; i < this.livro.autores.length; i++) {
+                this.livro.autores[i].children[0].setAttribute("contenteditable", "true");
+                this.livro.autores[i].children[0].className = "editavel";
             }
 
-            for (let i = 0; i < categorias.length; i++) {
-                categorias[i].setAttribute("contenteditable", "true");
-                categorias[i].className = "editavel";
-            }        
-        } else if (editavel === false) {
-            titulo.setAttribute("contenteditable", "true");
-            titulo.className = "editavel";
+            for (let i = 0; i < this.livro.categorias.length; i++) {
+                this.livro.categorias[i].setAttribute("contenteditable", "true");
+                this.livro.categorias[i].className = "editavel";
+            }
+            
+            //model.alterarTexto(titulo, indice);
+            
+            /*for (let i = 0; i < autores.length; i++) {
+                model.alterarTexto(nodeAutores, autores[i].children[0], indice);                
+            }
+            /*for (let i = 0; i < categorias.length; i++) {
+                model.alterarTexto(categorias[i], indice);         
+            }*/       
 
-            for (let i = 0; i < autores.length; i++) {
-                autores[i].children[0].setAttribute("contenteditable", "true");
-                autores[i].children[0].className = "editavel";
+        } else if (status === false) {
+            this.livro.titulo.setAttribute("contenteditable", "false");
+            this.livro.titulo.className = "titulo";
+
+            for (let i = 0; i < this.livro.autores.length; i++) {
+                this.livro.autores[i].children[0].setAttribute("contenteditable", "false");
+                this.livro.autores[i].children[0].className = "";
             }
 
-            for (let i = 0; i < categorias.length; i++) {
-                categorias[i].setAttribute("contenteditable", "true");
-                categorias[i].className = "editavel";
+            for (let i = 0; i < this.livro.categorias.length; i++) {
+                this.livro.categorias[i].setAttribute("contenteditable", "false");
+                this.livro.categorias[i].className = "";
             }
         }
     },
 
-    // separar o escutar da função que altera? colocar um loop?
-    escutar: function(path, titulo) {
-        var idLivro = model.indice(path.id);
-        
-        titulo.addEventListener("input", 
-        
-            function(event) {
-                var novoTitulo = event.target.innerText;
-                console.log(novoTitulo)
-                model.biblioteca[idLivro].titulo = novoTitulo;
-            });
+    alterarTexto: function(node, campo, indice) {
 
+        console.log(node);
+        
+        for (let i = 0; i < node.length; i++) {
+            node[i].indice = i;
+            node[i].addEventListener("input", function() {
+                console.log(this.indice + 1)
+            })
+        }
+
+        /*campo.addEventListener("input", function(event) {
+                  
+        })*/
+
+        /*var indiceCampo = event.target.classList[0]
+        var novoCampo = event.target.innerText;
+
+        if (indiceCampo === "titulo") {
+            model.biblioteca[indice].titulo = novoCampo;
+        } else if (indiceCampo === "autores") {
+            model.biblioteca[indice].autores = novoCampo;
+        } else if (indiceCampo === "categorias") {
+            model.biblioteca[indice].categorias = novoCampo;
+        }*/
     },
 
     indice: function(id) {
@@ -199,22 +252,21 @@ var model = {
 
 var controller = {
     excluir: function(event) {
-        
         // remove o livro do array
-        var idLivro = event.composedPath()[3].id;
-        model.biblioteca.splice(model.indice(idLivro), 1);
+        model.biblioteca.splice(model.indice(model.livro.isbn), 1);
 
         // remove o livro da exibição
         var pai = document.getElementById("containerLivros");
-        var filho = document.getElementById(idLivro)
+        var filho = document.getElementById(model.livro.isbn)
         pai.removeChild(filho);
     },
 
+    // recebe o evento clique do botao editar e envia o caminho dos campos editaveis para model.editavel
     editar: function(event) {
         // envia o elemento html do evento clique para ativar a edição dos campos
-        var path = event.composedPath()[3];
+        //var path = event.composedPath()[3];
         //var idPath = path.target.id
-        model.editavel(path, true);
+        model.tornarEditavel(true);
     }
 }
 
@@ -227,15 +279,14 @@ function Livro(titulo, autores, categorias, isbn, capa) {
 }
 
 window.onload = function() {
-    var procurar = document.getElementById("botaoProcurar");
-    procurar.addEventListener("click", model.pesquisarLivro);
+        var botaoPesquisarLivro = document.getElementById("pesquisarLivro");
+        var botaoExibirPesquisa = document.getElementById("exibirPesquisa")
+        var botaoEsconderPesquisa = document.getElementById("containerModal")
 
-    // verificar se devo deixar a função no onload ou inserir em outro local
-    var nomeAntigo = document.getElementById("nome")
-    nomeAntigo.addEventListener("input", function(event) {
-       novoNome = event.target.innerText;
-       model.nome = novoNome;
-    })
+        //deixar aqui ou deixar em ativarBotoes?
+        botaoPesquisarLivro.addEventListener("click", model.pesquisarLivro);
+        botaoExibirPesquisa.addEventListener("click", view.exibirEsconderPesquisa);
+        botaoEsconderPesquisa.addEventListener("click", view.exibirEsconderPesquisa);
 
     model.carregarLivros();
     model.ativarBotoes();
