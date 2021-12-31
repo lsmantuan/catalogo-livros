@@ -1,12 +1,16 @@
 var view = {
-    adicionarLivro: function() {
+    // carrega o último livro da biblioteca
+    adicionarLivro: function(indice) {
         var biblioteca = document.getElementById("containerLivros");
         var livro = document.createElement("article");
 
-        var iLivros = model.biblioteca.length - 1;
-        var capa = model.biblioteca[iLivros].capa;
-        var titulo = model.biblioteca[iLivros].titulo;
-        var isbn = model.biblioteca[iLivros].isbn;
+        if (indice === undefined) {
+            indice = model.biblioteca.length - 1;   
+        } 
+    
+        var capa = model.biblioteca[indice].capa;
+        var titulo = model.biblioteca[indice].titulo;
+        var isbn = model.biblioteca[indice].isbn;
         
         livro.className = "item";
         livro.id = isbn;
@@ -30,45 +34,48 @@ var view = {
                 <ul class="categorias"></ul>
             </div>`;
         biblioteca.appendChild(livro);
-        view.adicionarAutores(iLivros);
-        view.adicionarCategorias(iLivros);
+        view.adicionarAutores(indice);
+        view.adicionarCategorias(indice);
         model.ativarBotoes();
     },
 
-    adicionarAutores: function(iLivros) {
-        var iAutores = model.biblioteca[iLivros].autores.length;
+    // carrega os autores do último livro
+    adicionarAutores: function(indice) {
+        var iAutores = model.biblioteca[indice].autores.length;
         for (let i = 0; i < iAutores; i++) {
-            var autores = model.biblioteca[iLivros].autores[i];
+            var autores = model.biblioteca[indice].autores[i];
             var listaAutores = document.getElementsByClassName("autores");
             var listaAutor = document.createElement("li");
             listaAutor.innerHTML = `<h3>${autores}</h3>`;
-            listaAutores[iLivros].appendChild(listaAutor);
+            listaAutores[indice].appendChild(listaAutor);
         }
     },
 
-    adicionarCategorias: function(iLivros) {
-        var iCategorias = model.biblioteca[iLivros].categorias.length;
+    // carrega as categorias do último livro
+    adicionarCategorias: function(indice) {
+        var iCategorias = model.biblioteca[indice].categorias.length;
         for (let i = 0; i < iCategorias; i++) {
-            var categorias = model.biblioteca[iLivros].categorias[i];
+            var categorias = model.biblioteca[indice].categorias[i];
             var listaCategorias = document.getElementsByClassName("categorias");
             var listaCategoria = document.createElement("li");
             listaCategoria.innerHTML = `${categorias}`;
-            listaCategorias[iLivros].appendChild(listaCategoria);
+            listaCategorias[indice].appendChild(listaCategoria);
         }        
     },
 
-    exibirCarregando: function(status) {
+    // exibe a animação carregar
+    exibirCarregar: function(status) {
         var carregar = document.getElementById("carregar");
         var container = document.getElementById("containerModal");
         if (status === true) {
             carregar.style.display = "block";
-            container.style.display = "flex";
         } else if (status === false) {
             carregar.style.display = "none";
             container.style.display = "none";
         }
     },
 
+    // exibe e esconde o menu ferramentas
     exibirFerramentas: function(event) {
         model.livroAtual(event);
         var status = event.target.className;
@@ -84,7 +91,8 @@ var view = {
         }
     },
 
-    exibirEsconderPesquisa: function(event) {
+    // exibe e esconde o menu pesquisa
+    exibirPesquisa: function(event) {
         var status = event.target.id;
         var container = document.getElementById("containerModal");
         var pesquisar = document.getElementById("pesquisar");
@@ -98,6 +106,7 @@ var view = {
         }
     },
 
+    // esconde o menu pesquisa
     esconderPesquisa: function() {
         var pesquisar = document.getElementById("pesquisar");
         pesquisar.style.display = "none";
@@ -106,14 +115,31 @@ var view = {
 
 var model = {
     nome: "Minha Biblioteca",
-    biblioteca: [],
-    livro: {titulo: "", autores: "", categorias: "", isbn: "", ferramentas: "", botaoAbrir: "", botaoFechar: ""},
+
+    biblioteca: [ { titulo: "De primatas a astronautas",
+                    autores: ["Leonard Mlodinow"],
+                    categorias: ["Science"],
+                    isbn: "9788537814697",
+                    capa: "http://books.google.com/books/content?id=7xLUDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api" },
+                  { titulo: "De zero a um",
+                    autores: ["Blake Masters", "Peter Thiel"],
+                    categorias: ["Business & Economics"],
+                    isbn: "9788539006373",
+                    capa: "http://books.google.com/books/content?id=EtmxBAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api" }
+                ],
+    
+    livro: { titulo: "", 
+             autores: "", 
+             categorias: "", 
+             isbn: "", 
+             ferramentas: "", 
+             botaoAbrir: "", 
+             botaoFechar: "" },
 
     // salva o livro atual na propriedade livro
     livroAtual: function(event) {
         var path = event.composedPath()[3];
-        var indice = model.indice(path.id);
-
+        // var indice = model.indice(path.id);
         this.livro.titulo = path.children[2].children[0];
         this.livro.autores = path.children[2].children[1].children;
         this.livro.categorias = path.children[2].children[2].children;
@@ -121,15 +147,15 @@ var model = {
         this.livro.ferramentas = path.children[0];
         this.livro.botaoAbrir = path.children[0].children[1].children[0];
         this.livro.botaoFechar = path.children[0].children[1].children[1];
-
     },
 
+    // pesquisa o livro na api do google
     pesquisarLivro: function() {
-        var isbn = document.getElementById("inputISBN");
+        var isbn = document.getElementById("inputIsbn");
         var link = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn.value;
         
         view.esconderPesquisa();
-        view.exibirCarregando(true);
+        view.exibirCarregar(true);
 
         fetch(link)
             .then(function(response) {
@@ -144,16 +170,27 @@ var model = {
                 var isbn = response.items[0].volumeInfo.industryIdentifiers[0].identifier;
                 var livro = new Livro(titulo, autores, categorias, isbn, capa);
                 model.biblioteca.push(livro);
-                view.exibirCarregando(false);
+                view.exibirCarregar(false);
                 view.adicionarLivro();
             });
     },
 
+    // carrega os livros da bibloteca
     carregarLivros: function() {
         for (let i = 0; i < this.biblioteca.length; i++) {
-            return view.adicionarLivro();
+            view.adicionarLivro(i);
         }
     },
+
+
+
+
+
+
+
+
+
+
 
     ativarBotoes: function() {
 
@@ -285,8 +322,8 @@ window.onload = function() {
 
         //deixar aqui ou deixar em ativarBotoes?
         botaoPesquisarLivro.addEventListener("click", model.pesquisarLivro);
-        botaoExibirPesquisa.addEventListener("click", view.exibirEsconderPesquisa);
-        botaoEsconderPesquisa.addEventListener("click", view.exibirEsconderPesquisa);
+        botaoExibirPesquisa.addEventListener("click", view.exibirPesquisa);
+        botaoEsconderPesquisa.addEventListener("click", view.exibirPesquisa);
 
     model.carregarLivros();
     model.ativarBotoes();

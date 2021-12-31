@@ -40,6 +40,29 @@ ul {
     font-size: 1.3rem;
 }
 
+#containerLogo {
+    position: fixed;
+    z-index: -1;
+    width: 192px;
+    height: 164px;
+    left: calc(50% - 82px);
+    top: calc(50% - 96px);
+    transform: skew(-5deg, -5deg);
+    font-size: 3.5rem;
+    font-weight: bold;
+    text-align: center;
+    line-height: 3rem;
+    color: white;
+    text-transform: uppercase;
+    text-shadow:
+            -1px 1px 0 rgb(240, 240, 240), 
+            -1px -1px 0 rgb(240, 240, 240), 
+            1px 1px 0 rgb(240, 240, 240), 
+            1px -1px 0 rgb(240, 240, 240),
+            3px 3px 0 rgb(210, 210, 210),
+            6px 6px 0 rgb(240, 240, 240);
+}
+
 #containerModal {
     position: fixed;
     width: 100%;
@@ -75,7 +98,7 @@ ul {
     text-align: center;
 }
 
-#inputISBN {
+#inputIsbn {
     width: 160px;
     height: 35px;
     border: 1px solid black;
@@ -106,7 +129,7 @@ ul {
 
 .item {
     flex-basis: 90%;
-    background-color: lightgray;
+    /*background-color: lightgray;*/
     margin-top: 10px;
     margin-left: 10px;
 }
@@ -224,8 +247,8 @@ ul {
     position: fixed;
     width: 55px;
     height: 55px;
-    top: 100%;
     left: 100%;
+    top: 100%;
     transform: translate(-105px, -105px);
     border: none;
     border-radius: 50%;
