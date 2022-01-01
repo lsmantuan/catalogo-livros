@@ -4,7 +4,7 @@
 
 @font-face { 
     font-family: "Mantuan";
-    src: url(/fonts/mantuan.ttf);
+    src: url(../fonts/mantuan.ttf);
 }
 
 @keyframes spin {
@@ -47,7 +47,7 @@ ul {
     height: 164px;
     left: calc(50% - 82px);
     top: calc(50% - 96px);
-    transform: skew(-5deg, -5deg);
+    /*transform: skew(-5deg, -5deg);*/
     font-size: 3.5rem;
     font-weight: bold;
     text-align: center;
@@ -55,12 +55,12 @@ ul {
     color: white;
     text-transform: uppercase;
     text-shadow:
-            -1px 1px 0 rgb(240, 240, 240), 
-            -1px -1px 0 rgb(240, 240, 240), 
-            1px 1px 0 rgb(240, 240, 240), 
-            1px -1px 0 rgb(240, 240, 240),
-            3px 3px 0 rgb(210, 210, 210),
-            6px 6px 0 rgb(240, 240, 240);
+            -1px 1px 0 rgb(250, 250, 250), 
+            -1px -1px 0 rgb(250, 250, 250), 
+            1px 1px 0 rgb(250, 250, 250), 
+            1px -1px 0 rgb(250, 250, 250),
+            3px 3px 0 rgb(240, 240, 240),
+            6px 6px 0 rgb(250, 250, 250);
 }
 
 #containerModal {
