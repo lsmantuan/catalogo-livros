@@ -80,11 +80,11 @@ var view = {
         model.livroAtual(event);
         var status = event.target.className;
         if (status === "botaoAbrir") {
-            model.livro.ferramentas.style.width = "90px";
+            model.livro.ferramentas.style.width = "80px";
             model.livro.botaoAbrir.style.display = "none";
             model.livro.botaoFechar.style.display = "block";
         } else if (status === "botaoFechar") {
-            model.livro.ferramentas.style.width = "30px";
+            model.livro.ferramentas.style.width = "20px";
             model.livro.botaoAbrir.style.display = "block";
             model.livro.botaoFechar.style.display = "none";
             model.tornarEditavel(false);
