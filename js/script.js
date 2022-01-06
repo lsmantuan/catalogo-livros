@@ -77,17 +77,53 @@ var view = {
 
     // exibe e esconde o menu ferramentas
     exibirFerramentas: function(event) {
+        var botaoClicado = event.target.className;
         model.livroAtual(event);
-        var status = event.target.className;
-        if (status === "botaoAbrir") {
+
+        if (botaoClicado === "botaoAbrir") {
             model.livro.ferramentas.style.width = "80px";
             model.livro.botaoAbrir.style.display = "none";
             model.livro.botaoFechar.style.display = "block";
-        } else if (status === "botaoFechar") {
+            view.esconderFerramentas();
+        } else if (botaoClicado === "botaoFechar") {
             model.livro.ferramentas.style.width = "20px";
             model.livro.botaoAbrir.style.display = "block";
             model.livro.botaoFechar.style.display = "none";
             model.tornarEditavel(false);
+        }
+    },
+
+    // esconde as ferramentas que não estao em evidência
+    esconderFerramentas: function() {
+        var livros = document.getElementsByClassName("item");
+
+        for (let i = 0; i < livros.length; i++) {
+            var conteudo = livros[i].children[2].children;
+            var ferramentas = livros[i].children[0];
+            var titulo = conteudo[0];
+            var autores = conteudo[1].children;
+            var categorias = conteudo[2].children;
+            var botaoAbrir = ferramentas.children[1].children[0];
+            var botaoFechar = ferramentas.children[1].children[1];
+            
+            if (livros[i].id !== model.livro.isbn) {
+                ferramentas.style.width = "20px";
+                botaoAbrir.style.display = "block";
+                botaoFechar.style.display = "none";
+
+                titulo.setAttribute("contenteditable", "false");
+                titulo.className = "titulo";
+
+                for (let i = 0; i < autores.length; i++) {
+                    autores[i].children[0].setAttribute("contenteditable", "false");
+                    autores[i].children[0].className = "";
+                }
+
+                for (let i = 0; i < categorias.length; i++) {
+                    categorias[i].setAttribute("contenteditable", "false");
+                    categorias[i].className = "";
+                }
+            }
         }
     },
 
@@ -110,12 +146,25 @@ var view = {
     esconderPesquisa: function() {
         var pesquisar = document.getElementById("pesquisar");
         pesquisar.style.display = "none";
+    },
+
+    exibirErro: function(texto) {
+        view.exibirCarregar(false);
+        var container = document.getElementById("containerModal");
+        var pesquisar = document.getElementById("pesquisar");
+        var mensagem = document.getElementById("mensagem");
+
+        container.style.display = "flex";
+        pesquisar.style.display = "block";
+        mensagem.innerHTML = texto;
     }
 };
 
 var model = {
+    // nome da biblioteca
     nome: "Minha Biblioteca",
 
+    // livros da biblioteca
     biblioteca: [ { titulo: "De primatas a astronautas",
                     autores: ["Leonard Mlodinow"],
                     categorias: ["Science"],
@@ -128,7 +177,9 @@ var model = {
                     capa: "http://books.google.com/books/content?id=EtmxBAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api" }
                 ],
     
-    livro: { titulo: "", 
+    // livro atual para edição
+    livro: { indice: "",
+             titulo: "", 
              autores: "", 
              categorias: "", 
              isbn: "", 
@@ -139,7 +190,7 @@ var model = {
     // salva o livro atual na propriedade livro
     livroAtual: function(event) {
         var path = event.composedPath()[3];
-        // var indice = model.indice(path.id);
+        this.livro.indice = model.indice(path.id);
         this.livro.titulo = path.children[2].children[0];
         this.livro.autores = path.children[2].children[1].children;
         this.livro.categorias = path.children[2].children[2].children;
@@ -159,7 +210,21 @@ var model = {
 
         fetch(link)
             .then(function(response) {
-                return response.json();
+                if (response.ok || response.status === 200) {
+                    return response.json();
+                } else {
+                    return view.exibirErro("Atenção! <br>Erro no servidor, <br>tente novamente.");
+                }
+            })
+
+            .then(function(response) {
+                var isbn = response.items[0].volumeInfo.industryIdentifiers[0].identifier;
+                
+                if (model.indice(isbn) === undefined) {
+                    return response;
+                } else {
+                    return view.exibirErro("Atenção! <br>Livro já existente <br>na sua biblioteca.");
+                }
             })
 
             .then(function(response) {
@@ -172,7 +237,12 @@ var model = {
                 model.biblioteca.push(livro);
                 view.exibirCarregar(false);
                 view.adicionarLivro();
+            })
+
+            .catch(function() {
+                return view.exibirErro("Atenção! <br>Verifique o ISBN do Livro <br> e tente novamente.");
             });
+
     },
 
     // carrega os livros da bibloteca
@@ -182,24 +252,19 @@ var model = {
         }
     },
 
+    // carrega o título da bibloteca
+    carregarTitulo: function() {
+        var titulo = document.getElementById("titulo")
+        titulo.innerText = this.nome;
+    },
 
-
-
-
-
-
-
-
-
-
+    // ativa os botões
     ativarBotoes: function() {
-
         var botoesExcluir = document.getElementsByClassName("botaoExcluir");
         var botoesEditar = document.getElementsByClassName("botaoEditar");
         var botoesAbrir = document.getElementsByClassName("botaoAbrir");
         var botoesFechar = document.getElementsByClassName("botaoFechar");
         
-        // criar um valor para botõesExcluir.length
         for (let i = 0; i < botoesExcluir.length; i++) {
             botoesExcluir[i].onclick = controller.excluir;
             botoesEditar[i].onclick = controller.editar;
@@ -210,7 +275,6 @@ var model = {
 
     // torna os campos do livro atual editaveis
     tornarEditavel: function(status) {
-
         if (status === true) {
             this.livro.titulo.setAttribute("contenteditable", "true");
             this.livro.titulo.className = "titulo editavel";
@@ -224,15 +288,8 @@ var model = {
                 this.livro.categorias[i].setAttribute("contenteditable", "true");
                 this.livro.categorias[i].className = "editavel";
             }
-            
-            //model.alterarTexto(titulo, indice);
-            
-            /*for (let i = 0; i < autores.length; i++) {
-                model.alterarTexto(nodeAutores, autores[i].children[0], indice);                
-            }
-            /*for (let i = 0; i < categorias.length; i++) {
-                model.alterarTexto(categorias[i], indice);         
-            }*/       
+
+            model.alterarTexto();
 
         } else if (status === false) {
             this.livro.titulo.setAttribute("contenteditable", "false");
@@ -250,36 +307,30 @@ var model = {
         }
     },
 
-    alterarTexto: function(node, campo, indice) {
+    // salva o texto ao editar o livro
+    alterarTexto: function() {
 
-        console.log(node);
-        
-        for (let i = 0; i < node.length; i++) {
-            node[i].indice = i;
-            node[i].addEventListener("input", function() {
-                console.log(this.indice + 1)
-            })
-        }
+        this.livro.titulo.addEventListener("input", function() {
+            model.biblioteca[model.livro.indice].titulo = model.livro.titulo.innerText;
+        });
 
-        /*campo.addEventListener("input", function(event) {
-                  
-        })*/
+        for (let i = 0; i < this.livro.autores.length; i++) {
+            this.livro.autores[i].addEventListener("input", function() {
+                model.biblioteca[model.livro.indice].autores[i] = model.livro.autores[i].innerText;
+            })            
+        };
 
-        /*var indiceCampo = event.target.classList[0]
-        var novoCampo = event.target.innerText;
-
-        if (indiceCampo === "titulo") {
-            model.biblioteca[indice].titulo = novoCampo;
-        } else if (indiceCampo === "autores") {
-            model.biblioteca[indice].autores = novoCampo;
-        } else if (indiceCampo === "categorias") {
-            model.biblioteca[indice].categorias = novoCampo;
-        }*/
+        for (let i = 0; i < this.livro.categorias.length; i++) {
+            this.livro.categorias[i].addEventListener("input", function() {
+                model.biblioteca[model.livro.indice].categorias[i] = model.livro.categorias[i].innerText;
+            })            
+        };
     },
-
+    
+    // retorna o indice do livro pesquisado
     indice: function(id) {
         for (let i = 0; i < model.biblioteca.length; i++) {
-            var indice = model.biblioteca[i].isbn.indexOf(id)
+            var indice = model.biblioteca[i].isbn.indexOf(id);
             if (indice === 0) {
                 return i;
             }
@@ -288,25 +339,22 @@ var model = {
 }
 
 var controller = {
-    excluir: function(event) {
-        // remove o livro do array
+    // remove o livro da exibição e biblioteca        
+    excluir: function() {
         model.biblioteca.splice(model.indice(model.livro.isbn), 1);
 
-        // remove o livro da exibição
         var pai = document.getElementById("containerLivros");
         var filho = document.getElementById(model.livro.isbn)
         pai.removeChild(filho);
     },
 
-    // recebe o evento clique do botao editar e envia o caminho dos campos editaveis para model.editavel
-    editar: function(event) {
-        // envia o elemento html do evento clique para ativar a edição dos campos
-        //var path = event.composedPath()[3];
-        //var idPath = path.target.id
+    // verificar onde colocar o tornarEditável
+    editar: function() {
         model.tornarEditavel(true);
     }
 }
 
+// função construtora do objeto livro
 function Livro(titulo, autores, categorias, isbn, capa) {
         this.titulo = titulo;
         this.autores = autores;
@@ -315,16 +363,20 @@ function Livro(titulo, autores, categorias, isbn, capa) {
         this.capa = capa;
 }
 
+// carrega os livros cadastrados e ativa o botão de pesquisa
 window.onload = function() {
         var botaoPesquisarLivro = document.getElementById("pesquisarLivro");
         var botaoExibirPesquisa = document.getElementById("exibirPesquisa")
         var botaoEsconderPesquisa = document.getElementById("containerModal")
+        var alterarTitulo = document.getElementById("titulo")
 
-        //deixar aqui ou deixar em ativarBotoes?
         botaoPesquisarLivro.addEventListener("click", model.pesquisarLivro);
         botaoExibirPesquisa.addEventListener("click", view.exibirPesquisa);
         botaoEsconderPesquisa.addEventListener("click", view.exibirPesquisa);
+        alterarTitulo.addEventListener("input", function() {
+            model.nome = this.innerText;
+        });
 
     model.carregarLivros();
-    model.ativarBotoes();
+    model.carregarTitulo();
 }

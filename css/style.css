@@ -29,15 +29,17 @@ ul {
 
 .topo {
     position: fixed;
+    z-index: 1;
     width: 100%;
     height: 50px;
-    padding: 8px 0 0 10px;
+    padding: 10px 0 0 10px;
     background-color: blueviolet;
     color: white;
 }
 
-.titulo {
+.tituloBiblioteca {
     font-size: 1.6rem;
+    outline: none;
 }
 
 #containerLogo {
@@ -47,7 +49,6 @@ ul {
     height: 164px;
     left: calc(50% - 96px);
     top: calc(50% - 82px);
-    /*transform: skew(-5deg, -5deg);*/
     font-size: 3.5rem;
     font-weight: bold;
     text-align: center;
@@ -57,14 +58,15 @@ ul {
     text-shadow:
             1px -1px 0 rgb(250, 250, 250),
             -1px 1px 0 rgb(250, 250, 250),
+            3px 3px 0 rgb(240, 240, 240),
             1px 1px 0 rgb(250, 250, 250),
             -1px -1px 0 rgb(250, 250, 250),  
-            3px 3px 0 rgb(240, 240, 240),
             6px 6px 0 rgb(250, 250, 250);
 }
 
 #containerModal {
     position: fixed;
+    z-index: 1;
     width: 100%;
     height: 100%;
     background-color: brown;
@@ -122,14 +124,14 @@ ul {
 }
 
 #containerLivros {
-    padding-top: 50px;
     display: flex;
     flex-wrap: wrap;
+    padding-top: 50px;
 }
 
 .item {
     flex-basis: 90%;
-    /*background-color: lightgray;*/
+    background-color: rgba(250, 250, 250, 0.3);
     margin-top: 10px;
     margin-left: 10px;
 }
@@ -147,16 +149,23 @@ ul {
 }
 
 .capa {
+    display: flex;
     float: left;
+    align-items: center;
     width: 90px;
+    height: 134px;
 }
 
 .capa > img {
     width: 100%;
 }
 
+.titulo {
+    font-size: 1.4rem;
+}
+
 .conteudo {
-    margin: 10px 30px 10px 100px;
+    margin: 5px 30px 0px 100px;
 }
 
 .autores, .categorias {
