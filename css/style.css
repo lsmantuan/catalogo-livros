@@ -4,7 +4,7 @@
 
 @font-face { 
     font-family: "Mantuan";
-    src: url(/fonts/mantuan.ttf);
+    src: url(../fonts/mantuan.ttf);
 }
 
 @keyframes spin {
