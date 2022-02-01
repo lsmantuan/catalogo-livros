@@ -1,3 +1,3 @@
 # Catálogo de Livros
 
-Último projeto desenvolvido, procurei utilizar o conceito de Mobile First no seu desenvolvimento e para a pesquisa dos livros utilizei API Fetch(). Confesso que este projeto precisa de uma pequena refatoração.
+No último projeto desenvolvido, procurei utilizar o conceito de Mobile First e para a pesquisa dos livros utilizei API Fetch(). Admito que este projeto precisa de uma pequena refatoração.
